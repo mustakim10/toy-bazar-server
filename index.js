@@ -28,6 +28,7 @@ async function run() {
     await client.connect();
 
     const toyCollection = client.db('toyBazar').collection('categories');
+    const myCollection = client.db('toyBazar').collection('myToys');
 
     app.get('/categories', async(req, res) => {
       const cursor = toyCollection.find();
@@ -39,9 +40,17 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const options = {
-        projection: {name:1,category:1,price:1,rating:1}
+        projection: {name:1,category:1,price:1,rating:1,image:1}
       };
       const result = await toyCollection.findOne(query, options);
+      res.send(result);
+    })
+
+    //myToys
+    app.post('/myToys', async(req, res) => {
+      const myToy = req.body ;
+      console.log(myToy);
+      const result = await myCollection.insertOne(myToy);
       res.send(result);
     })
 
