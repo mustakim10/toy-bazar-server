@@ -40,17 +40,34 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const options = {
-        projection: {name:1,category:1,price:1,rating:1,image:1}
+        projection: {name:1,category:1,price:1,rating:1,image:1,email:1}
       };
       const result = await toyCollection.findOne(query, options);
       res.send(result);
     })
 
     //myToys
+     app.get('/myToys', async(req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if(req.query?.email){
+        query = {email: req.query.email}
+      }
+      const result = await myCollection.find(query).toArray();
+      res.send(result);
+     })
+    
     app.post('/myToys', async(req, res) => {
       const myToy = req.body ;
       console.log(myToy);
       const result = await myCollection.insertOne(myToy);
+      res.send(result);
+    })
+
+    app.delete('/myToys/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await myCollection.deleteOne(query);
       res.send(result);
     })
 
